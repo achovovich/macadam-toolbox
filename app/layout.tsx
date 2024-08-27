@@ -1,24 +1,24 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
-
 export const metadata: Metadata = {
-  title: "Macadam Tool Box",
-  description: "",
+    title: "Macadam Tool Box",
+    description: "",
 };
 
-export default function RootLayout({
-  children,
+export default function AuthLayout({
+    children,
 }: Readonly<{
-  children: React.ReactNode;
+    children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <body className={inter.className}>
-        {children}
-      </body>
-    </html>
-  );
+    return (
+        <html>
+            <body className="h-full flex items-center justify-center 
+                bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] 
+                from-sky-300 to-blue-800"
+            >
+                {children}
+            </body>
+        </html>
+    );
 }
