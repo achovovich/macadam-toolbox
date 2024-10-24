@@ -16,3 +16,8 @@ export const RegisterSchema = z.object({
         message: "Name is required"
     })
 });
+
+export const NewProjectSchema = z.object({
+    name: z.string({ message: "Name is required" }),
+    description: z.string(),
+});
