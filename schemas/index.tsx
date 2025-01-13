@@ -18,6 +18,8 @@ export const RegisterSchema = z.object({
 });
 
 export const NewProjectSchema = z.object({
-    name: z.string({ message: "Name is required" }),
-    description: z.string(),
+    titre: z.string({ message: "Le titre est obligatoire" }),
+    description: z.string().optional(),
+    mobile: z.string().regex(/^\d+$/, { message: "Le téléphone est obligatoire" }),
+    email: z.union([z.string().email({ message: "L'email doit être valide" }), z.literal('')]).optional(),
 });
