@@ -1,0 +1,60 @@
+{
+    "coque": {
+        "id": "coque",
+        "label": "Quel type de selle?",
+        "options": [
+            {
+                "id": "coque1",
+                "name": "Selle monocoque",
+                "next": "choice2"
+            },
+            {
+                "id": "coque2",
+                "name": "Selle bicoque",
+                "next": "choice3"
+            }
+        ]
+    },
+    "choice2": {
+        "id": "confort",
+        "label": "Souhaitez-vous ajouter du confort?",
+        "options": [
+            {
+                "id": "confort1",
+                "name": "Oui pour le conducteur",
+                "next": "choice4"
+            },
+            {
+                "id": "confort2",
+                "name": "Oui pour les deux places",
+                "next": "choice4"
+            },
+            {
+                "id": "confort3",
+                "name": "Oui pour le passager",
+                "next": "choice4"
+            },
+            {
+                "id": "confort4",
+                "name": "Non, je garde la mousse d'origine",
+                "next": "choice4"
+            }
+        ]
+    },
+    "choice3": {
+        "id": "broderie",
+        "label": "Voulez-vous une broderie?",
+        "options": [
+            {
+                "id": "broderie1",
+                "name": "Oui au moins une",
+                "next": "choice4"
+            },
+            {
+                "id": "broderie2",
+                "name": "Non",
+                "next": "choice4"
+            }
+        ]
+    }
+}
