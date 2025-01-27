@@ -17,6 +17,8 @@ import { useTransition, useState } from "react";
 export const NewMoto = () => {
     const [error, setError] = useState<string | undefined>("");
     const [success, setSuccess] = useState<string | undefined>("");
+    const [next, setNext] = useState<string | undefined>("");
+    const [isSubmitting, setIsSubmitting] = useState("");
     const [isPending, startTransition] = useTransition();
 
     const form = useForm<z.infer<typeof NewProjectSchema>>({
@@ -37,8 +39,13 @@ export const NewMoto = () => {
             create(values)
                 .then((data) => {
                     setError(data.error);
-                    setSuccess(data.link);
+                    setSuccess(data.success + ' : https://trello.com/c/' + data.link);
+                    console.log(process.env.NEXT_PUBLIC_APP_URL_BASE);
+                    setNext(process.env.NEXT_PUBLIC_APP_URL_BASE + process.env.NEXT_PUBLIC_APP_URL_MOTO_CONFIG + '/' + data.link);
                 })
+                .finally(() => {
+                    setIsSubmitting("disabled");
+                });
         })
 
     }
@@ -63,7 +70,7 @@ export const NewMoto = () => {
                                         <Input
                                             {...field}
                                             {...Input}
-                                            disabled={isPending}
+                                            disabled={isPending|| isSubmitting}
                                             id="titre"
                                             type="titre"
                                             placeholder="">
@@ -84,7 +91,7 @@ export const NewMoto = () => {
                                         <Input
                                             {...field}
                                             {...Input}
-                                            disabled={isPending}
+                                            disabled={isPending|| isSubmitting}
                                             id="description"
                                             type="description"
                                             placeholder="">
@@ -105,7 +112,7 @@ export const NewMoto = () => {
                                         <Input
                                             {...field}
                                             {...Input}
-                                            disabled={isPending}
+                                            disabled={isPending || isSubmitting}
                                             id="mobile"
                                             type="mobile"
                                             placeholder="">
@@ -126,7 +133,7 @@ export const NewMoto = () => {
                                         <Input
                                             {...field}
                                             {...Input}
-                                            disabled={isPending}
+                                            disabled={isPending || isSubmitting}
                                             id="email"
                                             type="email"
                                             placeholder="">
@@ -139,10 +146,12 @@ export const NewMoto = () => {
                         </FormField>
                     </div>
                     <FormError message={error} />
-                    <FormSuccess message={success} />
-                    <Button type="submit" className="w-full" disabled={isPending}>
+                    
+                    <Button type="submit" className="w-full" disabled={isSubmitting}>
                         Creer
                     </Button>
+                    <FormSuccess message={success} />
+                    <FormSuccess message={next} />
                 </form>
 
 
