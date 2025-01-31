@@ -40,11 +40,11 @@ export const NewMoto = () => {
                 .then((data) => {
                     setError(data.error);
                     setSuccess(data.success + ' : https://trello.com/c/' + data.link);
-                    console.log(process.env.NEXT_PUBLIC_APP_URL_BASE);
                     setNext(process.env.NEXT_PUBLIC_APP_URL_BASE + process.env.NEXT_PUBLIC_APP_URL_MOTO_CONFIG + '/' + data.link);
+                    setIsSubmitting("disabled");
                 })
                 .finally(() => {
-                    setIsSubmitting("disabled");
+
                 });
         })
 
@@ -70,7 +70,7 @@ export const NewMoto = () => {
                                         <Input
                                             {...field}
                                             {...Input}
-                                            disabled={isPending|| isSubmitting}
+                                            disabled={isPending || isSubmitting}
                                             id="titre"
                                             type="titre"
                                             placeholder="">
@@ -91,7 +91,7 @@ export const NewMoto = () => {
                                         <Input
                                             {...field}
                                             {...Input}
-                                            disabled={isPending|| isSubmitting}
+                                            disabled={isPending || isSubmitting}
                                             id="description"
                                             type="description"
                                             placeholder="">
@@ -146,7 +146,7 @@ export const NewMoto = () => {
                         </FormField>
                     </div>
                     <FormError message={error} />
-                    
+
                     <Button type="submit" className="w-full" disabled={isSubmitting}>
                         Creer
                     </Button>

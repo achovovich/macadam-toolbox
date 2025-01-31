@@ -3,6 +3,11 @@
 import * as z from "zod";
 import { NewProjectSchema } from "@/schemas";
 import axios from "axios";
+import { randomInt } from "crypto";
+import { Project } from "@/interfaces/project";
+import { InsertResult } from "@/interfaces/insertResult";
+import { createProject } from "@/models/project";
+import clientPromise, { closeClient } from '../lib/mongodb';
 
 export const create = async (values: z.infer<typeof NewProjectSchema>) => {
     const validatedFields = NewProjectSchema.safeParse(values);
@@ -10,8 +15,30 @@ export const create = async (values: z.infer<typeof NewProjectSchema>) => {
         return { error: "Invalid fields!" }
     }
 
+    let client;
+
     try {
-        console.log("Creating card in Trello...");
+        client = await clientPromise;
+
+        let cardId = randomInt(1000000000, 9999999999).toString();
+
+        const insertResult: InsertResult = await createProject({
+            cardId: cardId,
+            title: values.titre,
+            description: values.description,
+            mobile: values.mobile,
+            email: values.email,
+        });
+
+
+        if (!insertResult.acknowledged) {
+            return { error: "Failed to insert data into MongoDB" };
+        }
+
+        return {
+            success: "La carte a été créée avec succès dans Trello.",
+            link: cardId,
+        };
 
         const response = await axios.post(`https://api.trello.com/1/cards`, {
             key: process.env.REACT_APP_TRELLO_API_KEY,
@@ -52,5 +79,8 @@ export const create = async (values: z.infer<typeof NewProjectSchema>) => {
 
     } catch (e) {
         return { error: `Une erreur s'est produite lors de la création de la carte : ${e.message}` }
+
+    } finally {
+        // await closeClient();
     }
 };
