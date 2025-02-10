@@ -20,26 +20,6 @@ export const create = async (values: z.infer<typeof NewProjectSchema>) => {
     try {
         client = await clientPromise;
 
-        let cardId = randomInt(1000000000, 9999999999).toString();
-
-        const insertResult: InsertResult = await createProject({
-            cardId: cardId,
-            title: values.titre,
-            description: values.description,
-            mobile: values.mobile,
-            email: values.email,
-        });
-
-
-        if (!insertResult.acknowledged) {
-            return { error: "Failed to insert data into MongoDB" };
-        }
-
-        return {
-            success: "La carte a été créée avec succès dans Trello.",
-            link: cardId,
-        };
-
         const response = await axios.post(`https://api.trello.com/1/cards`, {
             key: process.env.REACT_APP_TRELLO_API_KEY,
             token: process.env.REACT_APP_TRELLO_TOKEN,
@@ -52,7 +32,23 @@ export const create = async (values: z.infer<typeof NewProjectSchema>) => {
 
             let cardId = response.data.id;
 
-            const commentText = `## Telephone : ${values.mobile}\n## Email : ${values.email}\n`;
+            const insertResult: InsertResult = await createProject({
+                cardId: cardId,
+                title: values.titre,
+                description: values.description,
+                mobile: values.mobile,
+                email: values.email,
+            });
+
+            if (!insertResult.acknowledged) {
+                return { error: "Failed to insert data into MongoDB" };
+            }
+            const linkToConfig = `${process.env.NEXT_PUBLIC_APP_URL_BASE}${process.env.NEXT_PUBLIC_APP_URL_MOTO_CONFIG}/${cardId}`;
+            let commentText = `## Telephone : ${values.mobile}\n`;
+            if (values.email != '') {
+                commentText += `## Email : ${values.email}\n`;
+            }
+            commentText += `Configurateur : ${linkToConfig}\n`;
             const commentResponse = await axios.post(`https://api.trello.com/1/cards/${cardId}/actions/comments`, {
 
                 key: process.env.REACT_APP_TRELLO_API_KEY,
@@ -61,16 +57,17 @@ export const create = async (values: z.infer<typeof NewProjectSchema>) => {
             });
 
             if (commentResponse.status === 200) {
+
                 return {
                     success: "La carte a été créée avec succès dans Trello.",
-                    link: `https://trello.com/c/${cardId}`,
+                    link: cardId,
                 };
 
             }
 
             return {
                 error: "Une erreur s'est produite lors de l'enregistrement des informations de contact.",
-                link: `https://trello.com/c/${cardId}`
+                link: cardId
             }
 
         } else {
